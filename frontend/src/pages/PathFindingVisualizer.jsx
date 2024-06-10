@@ -89,6 +89,43 @@ function PathFindingVisualizer() {
     }
   };
 
+  const breadthFirstSearch = async () => {
+    const startNode = grid.flat().find(node => node.isStart);
+    const endNode = grid.flat().find(node => node.isEnd);
+
+    if (!startNode || !endNode) return;
+
+    const queue = [startNode];
+    const visitedNodesInOrder = [];
+
+    while (queue.length > 0) {
+      const currentNode = queue.shift();
+
+      if (!currentNode || currentNode.isWall || currentNode.isVisited) continue;
+
+      currentNode.isVisited = true;
+      visitedNodesInOrder.push(currentNode);
+
+      if (currentNode === endNode) {
+        await visualizePath(currentNode);
+        return;
+      }
+
+      const { row, col } = currentNode;
+      const neighbors = getNeighbors(row, col);
+
+      for (const neighbor of neighbors) {
+        if (!neighbor.isVisited) {
+          neighbor.previousNode = currentNode;
+          queue.push(neighbor);
+        }
+      }
+
+      await delay(50);
+      setGrid([...grid]);
+    }
+  };
+
   const getNeighbors = (row, col) => {
     const neighbors = [];
     if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -117,6 +154,9 @@ function PathFindingVisualizer() {
     switch (algorithm) {
       case 'dfs':
         depthFirstSearch();
+        break;
+      case 'bfs':
+        breadthFirstSearch();
         break;
       default:
         setIsRunning(false);
@@ -173,6 +213,13 @@ function PathFindingVisualizer() {
           disabled={isRunning}
         >
           Depth-First Search
+        </button>
+        <button
+          onClick={() => handleAlgorithm('bfs')}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
+          disabled={isRunning}
+        >
+          Breadth-First Search
         </button>
       </div>
       <div id="grid-container" className="w-full h-full bg-white shadow-md">

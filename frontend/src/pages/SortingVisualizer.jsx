@@ -1,10 +1,12 @@
-// src/pages/SortingVisualizer.js
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import '../App.css'; // Make sure to import your CSS file
 
 function SortingVisualizer() {
   const [data, setData] = useState([]);
   const [numBars, setNumBars] = useState(20);
+  const [isSorting, setIsSorting] = useState(false);
+  const [delay, setDelay] = useState(100);
 
   useEffect(() => {
     generateNewArray();
@@ -56,31 +58,35 @@ function SortingVisualizer() {
       );
   };
 
+  const delayExecution = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   const handleSort = (algorithm) => {
+    if (isSorting) return;
+    setIsSorting(true);
     switch (algorithm) {
-      case 'selectionSort':
+      case 'selectionsort':
         selectionSort();
         break;
-      case 'bubbleSort':
+      case 'bubblesort':
         bubbleSort();
         break;
-      case 'insertionSort':
+      case 'insertionsort':
         insertionSort();
         break;
-      case 'mergeSort':
+      case 'mergesort':
         mergeSort();
         break;
-      case 'quickSort':
+      case 'quicksort':
         quickSort();
         break;
-      case 'countingSort':
+      case 'countingsort':
         countingSort();
         break;
-      case 'heapSort':
+      case 'heapsort':
         heapSort();
         break;
-      // Add cases for other algorithms here
       default:
+        setIsSorting(false);
         break;
     }
   };
@@ -97,7 +103,7 @@ function SortingVisualizer() {
         if (arr[j] < arr[minIndex]) {
           minIndex = j;
         }
-        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await delayExecution(delay); 
       }
       if (minIndex !== i) {
         [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
@@ -106,12 +112,11 @@ function SortingVisualizer() {
           .attr('y', d => 300 - d * 3)
           .attr('height', d => d * 3)
           .attr('fill', 'teal');
-        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await delayExecution(delay);
       }
     }
-
-    // Revert all bars to the default color after sorting
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
 
   const bubbleSort = async () => {
@@ -122,7 +127,7 @@ function SortingVisualizer() {
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length - i - 1; j++) {
         rects.attr('fill', (d, idx) => (idx === j || idx === j + 1 ? 'red' : 'teal'));
-        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await delayExecution(delay);
 
         if (arr[j] > arr[j + 1]) {
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
@@ -130,13 +135,12 @@ function SortingVisualizer() {
           rects.data(arr)
             .attr('y', d => 300 - d * 3)
             .attr('height', d => d * 3);
-          await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+          await delayExecution(delay);
         }
       }
     }
-
-    // Revert all bars to the default color after sorting
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
 
   const insertionSort = async () => {
@@ -155,7 +159,7 @@ function SortingVisualizer() {
         rects.data(arr)
           .attr('y', d => 300 - d * 3)
           .attr('height', d => d * 3);
-        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await delayExecution(delay);
         j = j - 1;
       }
       arr[j + 1] = key;
@@ -163,11 +167,10 @@ function SortingVisualizer() {
       rects.data(arr)
         .attr('y', d => 300 - d * 3)
         .attr('height', d => d * 3);
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
     }
-
-    // Revert all bars to the default color after sorting
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
 
   const mergeSort = async () => {
@@ -177,6 +180,7 @@ function SortingVisualizer() {
     const svg = d3.select('#d3-container').select('svg');
     const rects = svg.selectAll('rect').data(arr);
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
 
   const mergeSortHelper = async (arr, left, right) => {
@@ -199,7 +203,7 @@ function SortingVisualizer() {
 
     while (i < leftArray.length && j < rightArray.length) {
       rects.attr('fill', (d, idx) => (idx === k ? 'red' : 'teal'));
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
 
       if (leftArray[i] <= rightArray[j]) {
         arr[k] = leftArray[i];
@@ -217,7 +221,7 @@ function SortingVisualizer() {
 
     while (i < leftArray.length) {
       rects.attr('fill', (d, idx) => (idx === k ? 'red' : 'teal'));
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
       arr[k] = leftArray[i];
       setData([...arr]);
       rects.data(arr)
@@ -229,7 +233,7 @@ function SortingVisualizer() {
 
     while (j < rightArray.length) {
       rects.attr('fill', (d, idx) => (idx === k ? 'red' : 'teal'));
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
       arr[k] = rightArray[j];
       setData([...arr]);
       rects.data(arr)
@@ -247,6 +251,7 @@ function SortingVisualizer() {
     const svg = d3.select('#d3-container').select('svg');
     const rects = svg.selectAll('rect').data(arr);
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
 
   const quickSortHelper = async (arr, low, high) => {
@@ -265,7 +270,7 @@ function SortingVisualizer() {
 
     for (let j = low; j < high; j++) {
       rects.attr('fill', (d, idx) => (idx === j || idx === high ? 'red' : (idx === i + 1 ? 'yellow' : 'teal')));
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
 
       if (arr[j] < pivot) {
         i++;
@@ -274,7 +279,7 @@ function SortingVisualizer() {
         rects.data(arr)
           .attr('y', d => 300 - d * 3)
           .attr('height', d => d * 3);
-        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await delayExecution(delay);
       }
     }
     [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
@@ -282,7 +287,7 @@ function SortingVisualizer() {
     rects.data(arr)
       .attr('y', d => 300 - d * 3)
       .attr('height', d => d * 3);
-    await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+    await delayExecution(delay);
     return i + 1;
   };
 
@@ -297,19 +302,16 @@ function SortingVisualizer() {
     const svg = d3.select('#d3-container').select('svg');
     const rects = svg.selectAll('rect').data(arr);
 
-    // Store count of each element
     for (let i = 0; i < arr.length; i++) {
       count[arr[i] - min]++;
       rects.attr('fill', (d, idx) => (idx === i ? 'red' : 'teal'));
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
     }
 
-    // Store cumulative count
     for (let i = 1; i < count.length; i++) {
       count[i] += count[i - 1];
     }
 
-    // Find the index of each element in the output array
     for (let i = arr.length - 1; i >= 0; i--) {
       output[count[arr[i] - min] - 1] = arr[i];
       count[arr[i] - min]--;
@@ -318,13 +320,12 @@ function SortingVisualizer() {
         .attr('y', d => 300 - d * 3)
         .attr('height', d => d * 3)
         .attr('fill', 'teal');
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
     }
 
     setData([...output]);
-
-    // Revert all bars to the default color after sorting
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
 
   const heapSort = async () => {
@@ -353,7 +354,7 @@ function SortingVisualizer() {
           .attr('y', d => 300 - d * 3)
           .attr('height', d => d * 3)
           .attr('fill', 'teal');
-        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await delayExecution(delay);
         await heapify(arr, n, largest);
       }
     };
@@ -369,15 +370,24 @@ function SortingVisualizer() {
         .attr('y', d => 300 - d * 3)
         .attr('height', d => d * 3)
         .attr('fill', 'teal');
-      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await delayExecution(delay);
       await heapify(arr, i, 0);
     }
 
     setData([...arr]);
-
-    // Revert all bars to the default color after sorting
     rects.attr('fill', 'teal');
+    setIsSorting(false);
   };
+
+  const algorithms = [
+    { name: 'Selection Sort', description: 'A simple comparison-based sorting algorithm.' },
+    { name: 'Bubble Sort', description: 'A comparison-based algorithm that repeatedly swaps adjacent elements.' },
+    { name: 'Insertion Sort', description: 'Builds the sorted array one item at a time.' },
+    { name: 'Merge Sort', description: 'A divide-and-conquer algorithm that splits the array into halves.' },
+    { name: 'Quick Sort', description: 'A fast divide-and-conquer sorting algorithm.' },
+    { name: 'Counting Sort', description: 'A non-comparison-based sorting algorithm.' },
+    { name: 'Heap Sort', description: 'A comparison-based algorithm that uses a binary heap data structure.' },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -386,27 +396,17 @@ function SortingVisualizer() {
         <button onClick={generateNewArray} className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg m-2">
           Generate New Array
         </button>
-        <button onClick={() => handleSort('selectionSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Selection Sort
-        </button>
-        <button onClick={() => handleSort('bubbleSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Bubble Sort
-        </button>
-        <button onClick={() => handleSort('insertionSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Insertion Sort
-        </button>
-        <button onClick={() => handleSort('mergeSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Merge Sort
-        </button>
-        <button onClick={() => handleSort('quickSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Quick Sort
-        </button>
-        <button onClick={() => handleSort('countingSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Counting Sort
-        </button>
-        <button onClick={() => handleSort('heapSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
-          Heap Sort
-        </button>
+        {algorithms.map((algo) => (
+          <div className="tooltip" key={algo.name}>
+            <button
+              onClick={() => handleSort(algo.name.replace(' ', '').toLowerCase())}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
+            >
+              {algo.name}
+            </button>
+            <span className="tooltiptext">{algo.description}</span>
+          </div>
+        ))}
       </div>
       <div className="w-full mb-4 flex items-center justify-center">
         <label className="mr-2">Number of Bars: {numBars}</label>

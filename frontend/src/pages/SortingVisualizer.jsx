@@ -76,6 +76,9 @@ function SortingVisualizer() {
       case 'countingSort':
         countingSort();
         break;
+      case 'heapSort':
+        heapSort();
+        break;
       // Add cases for other algorithms here
       default:
         break;
@@ -324,6 +327,58 @@ function SortingVisualizer() {
     rects.attr('fill', 'teal');
   };
 
+  const heapSort = async () => {
+    let arr = [...data];
+    const n = arr.length;
+    const svg = d3.select('#d3-container').select('svg');
+    const rects = svg.selectAll('rect').data(arr);
+
+    const heapify = async (arr, n, i) => {
+      let largest = i;
+      const left = 2 * i + 1;
+      const right = 2 * i + 2;
+
+      if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+      }
+
+      if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+      }
+
+      if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        setData([...arr]);
+        rects.data(arr)
+          .attr('y', d => 300 - d * 3)
+          .attr('height', d => d * 3)
+          .attr('fill', 'teal');
+        await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+        await heapify(arr, n, largest);
+      }
+    };
+
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      await heapify(arr, n, i);
+    }
+
+    for (let i = n - 1; i > 0; i--) {
+      [arr[0], arr[i]] = [arr[i], arr[0]];
+      setData([...arr]);
+      rects.data(arr)
+        .attr('y', d => 300 - d * 3)
+        .attr('height', d => d * 3)
+        .attr('fill', 'teal');
+      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+      await heapify(arr, i, 0);
+    }
+
+    setData([...arr]);
+
+    // Revert all bars to the default color after sorting
+    rects.attr('fill', 'teal');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Sorting Visualizer</h2>
@@ -348,6 +403,9 @@ function SortingVisualizer() {
         </button>
         <button onClick={() => handleSort('countingSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
           Counting Sort
+        </button>
+        <button onClick={() => handleSort('heapSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
+          Heap Sort
         </button>
       </div>
       <div className="w-full mb-4 flex items-center justify-center">

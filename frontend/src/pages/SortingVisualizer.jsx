@@ -4,42 +4,53 @@ import * as d3 from 'd3';
 
 function SortingVisualizer() {
   const [data, setData] = useState([]);
+  const [numBars, setNumBars] = useState(20);
 
   useEffect(() => {
     generateNewArray();
-  }, []);
+  }, [numBars]);
 
   useEffect(() => {
     renderBars();
   }, [data]);
 
   const generateNewArray = () => {
-    setData([...Array(20)].map(() => Math.floor(Math.random() * 100)));
+    const newData = [...Array(parseInt(numBars))].map(() => Math.floor(Math.random() * 100));
+    setData(newData);
+  };
+
+  const handleNumBarsChange = (event) => {
+    setNumBars(event.target.value);
   };
 
   const renderBars = () => {
+    const svgWidth = 600;
+    const svgHeight = 300;
+    const barWidth = svgWidth / data.length - 2;
+
     const svg = d3.select('#d3-container')
       .selectAll('svg')
       .data([data])
       .join(
         enter => enter.append('svg')
-          .attr('width', 500)
-          .attr('height', 300)
+          .attr('width', svgWidth)
+          .attr('height', svgHeight)
+          .attr('style', 'display: block; margin: 0 auto;')
       );
 
     svg.selectAll('rect')
       .data(data)
       .join(
         enter => enter.append('rect')
-          .attr('x', (d, i) => i * 25)
-          .attr('y', d => 300 - d * 3)
-          .attr('width', 20)
+          .attr('x', (d, i) => i * (svgWidth / data.length))
+          .attr('y', d => svgHeight - d * 3)
+          .attr('width', barWidth)
           .attr('height', d => d * 3)
           .attr('fill', 'teal'),
         update => update
-          .attr('x', (d, i) => i * 25)
-          .attr('y', d => 300 - d * 3)
-          .attr('width', 20)
+          .attr('x', (d, i) => i * (svgWidth / data.length))
+          .attr('y', d => svgHeight - d * 3)
+          .attr('width', barWidth)
           .attr('height', d => d * 3)
           .attr('fill', 'teal')
       );
@@ -291,7 +302,10 @@ function SortingVisualizer() {
         <button onClick={() => handleSort('quickSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
           Quick Sort
         </button>
-        {/* Add more buttons for other sorting algorithms here */}
+      </div>
+      <div className="w-full mb-4 flex items-center justify-center">
+        <label className="mr-2">Number of Bars: {numBars}</label>
+        <input type="range" min="5" max="100" value={numBars} onChange={handleNumBarsChange} className="w-1/2" />
       </div>
       <div id="d3-container" className="w-full h-full bg-white shadow-md"></div>
     </div>

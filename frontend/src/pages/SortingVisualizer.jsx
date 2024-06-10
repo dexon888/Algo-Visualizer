@@ -73,6 +73,9 @@ function SortingVisualizer() {
       case 'quickSort':
         quickSort();
         break;
+      case 'countingSort':
+        countingSort();
+        break;
       // Add cases for other algorithms here
       default:
         break;
@@ -280,6 +283,47 @@ function SortingVisualizer() {
     return i + 1;
   };
 
+  const countingSort = async () => {
+    let arr = [...data];
+    let max = Math.max(...arr);
+    let min = Math.min(...arr);
+    let range = max - min + 1;
+    let count = new Array(range).fill(0);
+    let output = new Array(arr.length).fill(0);
+
+    const svg = d3.select('#d3-container').select('svg');
+    const rects = svg.selectAll('rect').data(arr);
+
+    // Store count of each element
+    for (let i = 0; i < arr.length; i++) {
+      count[arr[i] - min]++;
+      rects.attr('fill', (d, idx) => (idx === i ? 'red' : 'teal'));
+      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+    }
+
+    // Store cumulative count
+    for (let i = 1; i < count.length; i++) {
+      count[i] += count[i - 1];
+    }
+
+    // Find the index of each element in the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+      output[count[arr[i] - min] - 1] = arr[i];
+      count[arr[i] - min]--;
+      setData([...output]);
+      rects.data(output)
+        .attr('y', d => 300 - d * 3)
+        .attr('height', d => d * 3)
+        .attr('fill', 'teal');
+      await new Promise(resolve => setTimeout(resolve, 100)); // Pause for visualization
+    }
+
+    setData([...output]);
+
+    // Revert all bars to the default color after sorting
+    rects.attr('fill', 'teal');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Sorting Visualizer</h2>
@@ -301,6 +345,9 @@ function SortingVisualizer() {
         </button>
         <button onClick={() => handleSort('quickSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
           Quick Sort
+        </button>
+        <button onClick={() => handleSort('countingSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
+          Counting Sort
         </button>
       </div>
       <div className="w-full mb-4 flex items-center justify-center">

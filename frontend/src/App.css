@@ -65,3 +65,20 @@
   visibility: visible;
   opacity: 1;
 }
+
+/* src/App.css */
+.node {
+  display: inline-block;
+}
+
+.node-start {
+  background-color: green;
+}
+
+.node-end {
+  background-color: red;
+}
+
+.node-wall {
+  background-color: black;
+}

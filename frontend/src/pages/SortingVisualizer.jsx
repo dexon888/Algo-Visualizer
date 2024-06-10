@@ -1,5 +1,7 @@
+// src/pages/SortingVisualizer.js
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import '../App.css'; // Make sure to import your CSS file
 
 function SortingVisualizer() {
@@ -7,6 +9,7 @@ function SortingVisualizer() {
   const [numBars, setNumBars] = useState(20);
   const [isSorting, setIsSorting] = useState(false);
   const [delay, setDelay] = useState(100);
+  const navigate = useNavigate(); // Use useNavigate for navigation
 
   useEffect(() => {
     generateNewArray();
@@ -396,11 +399,15 @@ function SortingVisualizer() {
         <button onClick={generateNewArray} className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg m-2">
           Generate New Array
         </button>
+        <button onClick={() => navigate('/')} className="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-lg m-2">
+          Back to Home
+        </button>
         {algorithms.map((algo) => (
           <div className="tooltip" key={algo.name}>
             <button
               onClick={() => handleSort(algo.name.replace(' ', '').toLowerCase())}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
+              disabled={isSorting}
             >
               {algo.name}
             </button>

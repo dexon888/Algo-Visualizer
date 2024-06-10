@@ -6,13 +6,16 @@ function SortingVisualizer() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    // Initialize data
-    setData([...Array(20)].map(() => Math.floor(Math.random() * 100)));
+    generateNewArray();
   }, []);
 
   useEffect(() => {
     renderBars();
   }, [data]);
+
+  const generateNewArray = () => {
+    setData([...Array(20)].map(() => Math.floor(Math.random() * 100)));
+  };
 
   const renderBars = () => {
     const svg = d3.select('#d3-container')
@@ -86,6 +89,9 @@ function SortingVisualizer() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Sorting Visualizer</h2>
       <div className="mb-4">
+        <button onClick={generateNewArray} className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg m-2">
+          Generate New Array
+        </button>
         <button onClick={() => handleSort('selectionSort')} className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2">
           Selection Sort
         </button>

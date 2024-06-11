@@ -42,10 +42,10 @@ Algorithm Visualizer is a web application designed to help users understand and 
     npm start
 
 # Usage:
-Home Page: The home page features a typewriter effect that alternates between "Algorithm Visualizer" and "Tool for Algorithm Comprehension". From here, you can navigate to different sections of the visualizer.
-Sorting Algorithms: Select and visualize various sorting algorithms. Adjust the number of bars and generate a new array to see different sorting behaviors.
-Pathfinding Algorithms: Generate a grid with walls, start, and end nodes. Visualize different pathfinding algorithms to see how they find paths from the start to the end node.
-String Algorithms: Input text and patterns to visualize string matching algorithms like Knuth-Morris-Pratt (KMP).
+- Home Page: The home page features a typewriter effect that alternates between "Algorithm Visualizer" and "Tool for Algorithm Comprehension". From here, you can navigate to different sections of the visualizer.
+- Sorting Algorithms: Select and visualize various sorting algorithms. Adjust the number of bars and generate a new array to see different sorting behaviors.
+- Pathfinding Algorithms: Generate a grid with walls, start, and end nodes. Visualize different pathfinding algorithms to see how they find paths from the start to the end node.
+- String Algorithms: Input text and patterns to visualize string matching algorithms like Knuth-Morris-Pratt (KMP).
 
 # Algorithms Sections:
 ### Sorting Algorithms:

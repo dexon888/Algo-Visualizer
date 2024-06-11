@@ -24,6 +24,8 @@ function PathFindingVisualizer() {
         isVisited: false,
         isPath: false,
         distance: Infinity,
+        heuristic: Infinity,
+        totalCost: Infinity,
         previousNode: null,
       }))
     );
@@ -168,6 +170,57 @@ function PathFindingVisualizer() {
     }
   };
 
+  const aStar = async () => {
+    const startNode = grid.flat().find(node => node.isStart);
+    const endNode = grid.flat().find(node => node.isEnd);
+
+    if (!startNode || !endNode) return;
+
+    startNode.distance = 0;
+    startNode.heuristic = heuristic(startNode, endNode);
+    startNode.totalCost = startNode.heuristic;
+    const openSet = [startNode];
+
+    while (openSet.length > 0) {
+      openSet.sort((a, b) => a.totalCost - b.totalCost);
+      const currentNode = openSet.shift();
+
+      if (currentNode.isWall || currentNode.isVisited) continue;
+
+      currentNode.isVisited = true;
+
+      if (currentNode === endNode) {
+        await visualizePath(currentNode);
+        return;
+      }
+
+      const { row, col } = currentNode;
+      const neighbors = getNeighbors(row, col);
+
+      for (const neighbor of neighbors) {
+        if (!neighbor.isVisited && !neighbor.isWall) {
+          const tentativeGScore = currentNode.distance + 1;
+          if (tentativeGScore < neighbor.distance) {
+            neighbor.previousNode = currentNode;
+            neighbor.distance = tentativeGScore;
+            neighbor.heuristic = heuristic(neighbor, endNode);
+            neighbor.totalCost = neighbor.distance + neighbor.heuristic;
+            if (!openSet.includes(neighbor)) {
+              openSet.push(neighbor);
+            }
+          }
+        }
+      }
+
+      await delay(50);
+      setGrid([...grid]);
+    }
+  };
+
+  const heuristic = (node, endNode) => {
+    return Math.abs(node.row - endNode.row) + Math.abs(node.col - endNode.col);
+  };
+
   const getNeighbors = (row, col) => {
     const neighbors = [];
     if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -202,6 +255,9 @@ function PathFindingVisualizer() {
         break;
       case 'dijkstra':
         dijkstra();
+        break;
+      case 'astar':
+        aStar();
         break;
       default:
         setIsRunning(false);
@@ -272,6 +328,13 @@ function PathFindingVisualizer() {
           disabled={isRunning}
         >
           Dijkstra's Algorithm
+        </button>
+        <button
+          onClick={() => handleAlgorithm('astar')}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
+          disabled={isRunning}
+        >
+          A* Algorithm
         </button>
       </div>
       <div id="grid-container" className="w-full h-full bg-white shadow-md">

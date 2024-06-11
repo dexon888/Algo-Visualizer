@@ -126,6 +126,48 @@ function PathFindingVisualizer() {
     }
   };
 
+  const dijkstra = async () => {
+    const startNode = grid.flat().find(node => node.isStart);
+    const endNode = grid.flat().find(node => node.isEnd);
+
+    if (!startNode || !endNode) return;
+
+    startNode.distance = 0;
+    const unvisitedNodes = grid.flat().filter(node => !node.isWall);
+    const visitedNodesInOrder = [];
+
+    while (unvisitedNodes.length > 0) {
+      unvisitedNodes.sort((a, b) => a.distance - b.distance);
+      const currentNode = unvisitedNodes.shift();
+
+      if (currentNode.distance === Infinity) break;
+
+      currentNode.isVisited = true;
+      visitedNodesInOrder.push(currentNode);
+
+      if (currentNode === endNode) {
+        await visualizePath(currentNode);
+        return;
+      }
+
+      const { row, col } = currentNode;
+      const neighbors = getNeighbors(row, col);
+
+      for (const neighbor of neighbors) {
+        if (!neighbor.isVisited) {
+          const alt = currentNode.distance + 1;
+          if (alt < neighbor.distance) {
+            neighbor.distance = alt;
+            neighbor.previousNode = currentNode;
+          }
+        }
+      }
+
+      await delay(50);
+      setGrid([...grid]);
+    }
+  };
+
   const getNeighbors = (row, col) => {
     const neighbors = [];
     if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -157,6 +199,9 @@ function PathFindingVisualizer() {
         break;
       case 'bfs':
         breadthFirstSearch();
+        break;
+      case 'dijkstra':
+        dijkstra();
         break;
       default:
         setIsRunning(false);
@@ -220,6 +265,13 @@ function PathFindingVisualizer() {
           disabled={isRunning}
         >
           Breadth-First Search
+        </button>
+        <button
+          onClick={() => handleAlgorithm('dijkstra')}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
+          disabled={isRunning}
+        >
+          Dijkstra's Algorithm
         </button>
       </div>
       <div id="grid-container" className="w-full h-full bg-white shadow-md">

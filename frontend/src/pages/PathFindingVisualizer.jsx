@@ -229,6 +229,44 @@ function PathFindingVisualizer() {
     setIsRunning(false);
   };
 
+  const bellmanFord = async () => {
+    console.log("Bellman-Ford Algorithm started");
+    const startNode = grid.flat().find(node => node.isStart);
+    const endNode = grid.flat().find(node => node.isEnd);
+
+    if (!startNode || !endNode) return;
+
+    startNode.distance = 0;
+    const allNodes = grid.flat();
+    const visitedNodesInOrder = [];
+
+    for (let i = 1; i <= allNodes.length - 1; i++) {
+      let hasUpdated = false;
+      for (const currentNode of allNodes) {
+        if (currentNode.isWall || currentNode.distance === Infinity) continue;
+
+        const { row, col } = currentNode;
+        const neighbors = getNeighbors(row, col);
+
+        for (const neighbor of neighbors) {
+          if (neighbor.isWall) continue;
+
+          const newDistance = currentNode.distance + 1; // Assuming all edges have weight 1
+          if (newDistance < neighbor.distance) {
+            neighbor.distance = newDistance;
+            neighbor.previousNode = currentNode;
+            hasUpdated = true;
+            visitedNodesInOrder.push(neighbor);
+          }
+        }
+      }
+      if (!hasUpdated) break;
+    }
+
+    await visualizePath(endNode);
+    setIsRunning(false);
+  };
+
   const heuristic = (node, endNode) => {
     return Math.abs(node.row - endNode.row) + Math.abs(node.col - endNode.col);
   };
@@ -271,6 +309,9 @@ function PathFindingVisualizer() {
         break;
       case 'astar':
         aStar();
+        break;
+      case 'bellmanford':
+        bellmanFord();
         break;
       default:
         setIsRunning(false);
@@ -316,6 +357,7 @@ function PathFindingVisualizer() {
     { name: 'bfs', displayName: 'Breadth-First Search', description: 'Explores a graph by expanding the shallowest nodes first.' },
     { name: 'dijkstra', displayName: 'Dijkstra\'s Algorithm', description: 'Finds the shortest path between nodes in a graph.' },
     { name: 'astar', displayName: 'A* Algorithm', description: 'Finds the shortest path using heuristics to optimize the search.' },
+    { name: 'bellmanford', displayName: 'Bellman-Ford Algorithm', description: 'Finds the shortest paths from a single source node to all other nodes, even with negative weights.' },
   ];
 
   return (

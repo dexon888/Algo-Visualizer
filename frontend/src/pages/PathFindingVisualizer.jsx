@@ -55,6 +55,7 @@ function PathFindingVisualizer() {
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const depthFirstSearch = async () => {
+    console.log("Depth-First Search started");
     const startNode = grid.flat().find(node => node.isStart);
     const endNode = grid.flat().find(node => node.isEnd);
 
@@ -89,9 +90,12 @@ function PathFindingVisualizer() {
       await delay(50);
       setGrid([...grid]);
     }
+
+    setIsRunning(false);
   };
 
   const breadthFirstSearch = async () => {
+    console.log("Breadth-First Search started");
     const startNode = grid.flat().find(node => node.isStart);
     const endNode = grid.flat().find(node => node.isEnd);
 
@@ -126,9 +130,12 @@ function PathFindingVisualizer() {
       await delay(50);
       setGrid([...grid]);
     }
+
+    setIsRunning(false);
   };
 
   const dijkstra = async () => {
+    console.log("Dijkstra's Algorithm started");
     const startNode = grid.flat().find(node => node.isStart);
     const endNode = grid.flat().find(node => node.isEnd);
 
@@ -168,9 +175,12 @@ function PathFindingVisualizer() {
       await delay(50);
       setGrid([...grid]);
     }
+
+    setIsRunning(false);
   };
 
   const aStar = async () => {
+    console.log("A* Algorithm started");
     const startNode = grid.flat().find(node => node.isStart);
     const endNode = grid.flat().find(node => node.isEnd);
 
@@ -215,6 +225,8 @@ function PathFindingVisualizer() {
       await delay(50);
       setGrid([...grid]);
     }
+
+    setIsRunning(false);
   };
 
   const heuristic = (node, endNode) => {
@@ -245,6 +257,7 @@ function PathFindingVisualizer() {
 
   const handleAlgorithm = (algorithm) => {
     if (isRunning) return;
+    console.log(`Starting ${algorithm}`);
     setIsRunning(true);
     switch (algorithm) {
       case 'dfs':
@@ -298,6 +311,13 @@ function PathFindingVisualizer() {
     );
   };
 
+  const algorithms = [
+    { name: 'dfs', displayName: 'Depth-First Search', description: 'Explores a graph by expanding the deepest node in the frontier.' },
+    { name: 'bfs', displayName: 'Breadth-First Search', description: 'Explores a graph by expanding the shallowest nodes first.' },
+    { name: 'dijkstra', displayName: 'Dijkstra\'s Algorithm', description: 'Finds the shortest path between nodes in a graph.' },
+    { name: 'astar', displayName: 'A* Algorithm', description: 'Finds the shortest path using heuristics to optimize the search.' },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Path-Finding Visualizer</h2>
@@ -308,34 +328,18 @@ function PathFindingVisualizer() {
         <button onClick={() => navigate('/')} className="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-lg m-2">
           Back to Home
         </button>
-        <button
-          onClick={() => handleAlgorithm('dfs')}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-          disabled={isRunning}
-        >
-          Depth-First Search
-        </button>
-        <button
-          onClick={() => handleAlgorithm('bfs')}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-          disabled={isRunning}
-        >
-          Breadth-First Search
-        </button>
-        <button
-          onClick={() => handleAlgorithm('dijkstra')}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-          disabled={isRunning}
-        >
-          Dijkstra's Algorithm
-        </button>
-        <button
-          onClick={() => handleAlgorithm('astar')}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-          disabled={isRunning}
-        >
-          A* Algorithm
-        </button>
+        {algorithms.map((algo) => (
+          <div className="tooltip" key={algo.name}>
+            <button
+              onClick={() => handleAlgorithm(algo.name)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
+              disabled={isRunning}
+            >
+              {algo.displayName}
+            </button>
+            <span className="tooltiptext">{algo.description}</span>
+          </div>
+        ))}
       </div>
       <div id="grid-container" className="w-full h-full bg-white shadow-md">
         {renderGrid()}

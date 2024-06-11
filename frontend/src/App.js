@@ -1,17 +1,18 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import SortingVisualizer from './pages/SortingVisualizer';
 import PathFindingVisualizer from './pages/PathFindingVisualizer';
+import SortingVisualizer from './pages/SortingVisualizer';
+import StringVisualizer from './pages/StringVisualizer';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/path-finding-visualizer" element={<PathFindingVisualizer />} />
         <Route path="/sorting-visualizer" element={<SortingVisualizer />} />
-        <Route path="/pathfinding-visualizer" element={<PathFindingVisualizer />} />
+        <Route path="/string-visualizer" element={<StringVisualizer />} /> {/* Add the new route */}
       </Routes>
     </Router>
   );

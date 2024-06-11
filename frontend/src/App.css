@@ -90,7 +90,6 @@
   background-color: yellow;
 }
 
-/* Add a blinking cursor effect */
 @keyframes blink {
 
   0%,

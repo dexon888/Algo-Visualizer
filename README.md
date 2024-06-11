@@ -36,9 +36,11 @@ Algorithm Visualizer is a web application designed to help users understand and 
    cd algorithm-visualizer
 
 2. Install the dependencies:
+    ```sh
     npm install
 
 3. Start the development server
+    ```sh
     npm start
 
 # Usage:

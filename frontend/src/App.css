@@ -89,3 +89,22 @@
 .node-path {
   background-color: yellow;
 }
+
+/* Add a blinking cursor effect */
+@keyframes blink {
+
+  0%,
+  100% {
+    border-right-color: transparent;
+  }
+
+  50% {
+    border-right-color: black;
+  }
+}
+
+.text-4xl {
+  display: inline-block;
+  border-right: 2px solid black;
+  animation: blink 0.7s steps(1) infinite;
+}

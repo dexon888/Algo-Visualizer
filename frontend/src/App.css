@@ -107,3 +107,32 @@
   border-right: 2px solid black;
   animation: blink 0.7s steps(1) infinite;
 }
+
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  /* Black background */
+  color: white;
+  /* White text */
+  font-family: 'Roboto', sans-serif;
+}
+
+.MuiContainer-root {
+  background: none;
+}
+
+.MuiButton-root {
+  background-color: blue;
+  /* Blue color */
+  color: white;
+}
+
+.MuiButton-root:hover {
+  background-color: darkblue;
+  /* Darker blue on hover */
+}

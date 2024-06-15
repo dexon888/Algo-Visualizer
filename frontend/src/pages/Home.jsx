@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Container, Typography, Box, Button, Grid } from '@mui/material';
 import '../App.css';
 
 const Home = () => {
@@ -46,18 +47,59 @@ const Home = () => {
   }, [index, backspace, textIndex, texts]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">{displayText}</h1>
-      {sections.map((section) => (
-        <Link
-          key={section.name}
-          to={section.path}
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-lg mb-4"
-        >
-          {section.name}
-        </Link>
-      ))}
-    </div>
+    <Container
+      maxWidth="md"
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        bgcolor: 'background.paper',
+        backgroundImage: 'url(/background.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <Typography
+        variant="h2"
+        component="h1"
+        sx={{
+          mb: 8,
+          fontWeight: 'bold',
+          color: 'white',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+        }}
+      >
+        {displayText}
+      </Typography>
+      <Grid container spacing={3}>
+        {sections.map((section) => (
+          <Grid item xs={12} sm={6} md={4} key={section.name}>
+            <Link to={section.path} style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{
+                  py: 2,
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  color: 'white',
+                  transition: 'transform 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                  },
+                }}
+              >
+                {section.name}
+              </Button>
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 };
 

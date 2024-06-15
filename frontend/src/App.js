@@ -1,102 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Container, Typography, Grid, Button } from '@mui/material';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import PathFindingVisualizer from './pages/PathFindingVisualizer';
+import SortingVisualizer from './pages/SortingVisualizer';
+import StringVisualizer from './pages/StringVisualizer';
 
-const Home = () => {
-  const sections = [
-    { name: 'Path-Finding Algorithms', path: '/path-finding-visualizer' },
-    { name: 'Sorting Algorithms', path: '/sorting-visualizer' },
-    { name: 'String Algorithms', path: '/string-visualizer' },
-  ];
-
-  const [displayText, setDisplayText] = useState('');
-  const [index, setIndex] = useState(0);
-  const [backspace, setBackspace] = useState(false);
-  const [textIndex, setTextIndex] = useState(0);
-
-  const texts = ["Algorithm Visualizer", "Tool for Algorithm Comprehension"];
-
-  useEffect(() => {
-    const typingSpeed = 150;
-    const backspaceSpeed = 100;
-    const delay = 1000;
-
-    const handleTyping = () => {
-      if (backspace) {
-        if (index > 0) {
-          setDisplayText(prev => prev.slice(0, -1));
-          setIndex(prev => prev - 1);
-        } else {
-          setBackspace(false);
-          setTextIndex(prev => (prev + 1) % texts.length);
-        }
-      } else {
-        if (index < texts[textIndex].length) {
-          setDisplayText(prev => prev + texts[textIndex][index]);
-          setIndex(prev => prev + 1);
-        } else {
-          setTimeout(() => setBackspace(true), delay);
-        }
-      }
-    };
-
-    const timer = setTimeout(handleTyping, backspace ? backspaceSpeed : typingSpeed);
-
-    return () => clearTimeout(timer);
-  }, [index, backspace, textIndex, texts]);
-
+function App() {
   return (
-    <Container
-      maxWidth="md"
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        backgroundColor: 'black',
-      }}
-    >
-      <Typography
-        variant="h2"
-        component="h1"
-        sx={{
-          mb: 8,
-          fontWeight: 'bold',
-          color: 'white',
-        }}
-      >
-        {displayText}
-      </Typography>
-      <Grid container spacing={3}>
-        {sections.map((section) => (
-          <Grid item xs={12} sm={6} md={4} key={section.name}>
-            <Link to={section.path} style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{
-                  py: 2,
-                  backgroundColor: 'blue', // Blue color
-                  color: 'white',
-                  transition: 'transform 0.3s',
-                  '&:hover': {
-                    transform: 'scale(1.05)',
-                    backgroundColor: 'darkblue', // Darker blue on hover
-                  },
-                }}
-              >
-                {section.name.toUpperCase()}
-              </Button>
-            </Link>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/path-finding-visualizer" element={<PathFindingVisualizer />} />
+        <Route path="/sorting-visualizer" element={<SortingVisualizer />} />
+        <Route path="/string-visualizer" element={<StringVisualizer />} /> {/* Add the new route */}
+      </Routes>
+    </Router>
   );
-};
+}
 
-export default Home;
+export default App;

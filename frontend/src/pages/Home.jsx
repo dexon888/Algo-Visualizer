@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Typography, Box, Button, Grid } from '@mui/material';
+import { Container, Typography, Grid, Button } from '@mui/material';
 import '../App.css';
 
 const Home = () => {
@@ -56,10 +56,7 @@ const Home = () => {
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        bgcolor: 'background.paper',
-        backgroundImage: 'url(/background.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundColor: 'black',
       }}
     >
       <Typography
@@ -69,7 +66,6 @@ const Home = () => {
           mb: 8,
           fontWeight: 'bold',
           color: 'white',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
         }}
       >
         {displayText}
@@ -84,16 +80,16 @@ const Home = () => {
                 fullWidth
                 sx={{
                   py: 2,
-                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  backgroundColor: 'blue', // Blue color
                   color: 'white',
                   transition: 'transform 0.3s',
                   '&:hover': {
                     transform: 'scale(1.05)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    backgroundColor: 'darkblue', // Darker blue on hover
                   },
                 }}
               >
-                {section.name}
+                {section.name.toUpperCase()}
               </Button>
             </Link>
           </Grid>

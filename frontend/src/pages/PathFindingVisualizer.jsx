@@ -1,6 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container, Typography, Grid, Button, ThemeProvider } from '@mui/material';
+import Slider from '@mui/material/Slider';
+import { createTheme } from '@mui/material/styles';
 import '../App.css';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#1e88e5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+    background: {
+      default: '#000000',
+      paper: '#121212',
+    },
+    text: {
+      primary: '#ffffff',
+    },
+  },
+});
 
 function PathFindingVisualizer() {
   const navigate = useNavigate();
@@ -361,32 +383,88 @@ function PathFindingVisualizer() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h2 className="text-2xl font-bold mb-4">Path-Finding Visualizer</h2>
-      <div className="mb-4">
-        <button onClick={generateNewGrid} className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg m-2">
-          Generate New Grid
-        </button>
-        <button onClick={() => navigate('/')} className="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-lg m-2">
-          Back to Home
-        </button>
-        {algorithms.map((algo) => (
-          <div className="tooltip" key={algo.name}>
-            <button
-              onClick={() => handleAlgorithm(algo.name)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-              disabled={isRunning}
+    <ThemeProvider theme={theme}>
+      <Container
+        maxWidth="md"
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          backgroundColor: 'background.default',
+        }}
+      >
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{
+            mb: 4,
+            fontWeight: 'bold',
+            color: 'text.primary',
+          }}
+        >
+          Path-Finding Visualizer
+        </Typography>
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={generateNewGrid}
+              sx={{
+                px: 4,
+                py: 2,
+                mb: 2,
+              }}
             >
-              {algo.displayName}
-            </button>
-            <span className="tooltiptext">{algo.description}</span>
-          </div>
-        ))}
-      </div>
-      <div id="grid-container" className="w-full h-full bg-white shadow-md">
-        {renderGrid()}
-      </div>
-    </div>
+              Generate New Grid
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => navigate('/')}
+              sx={{
+                px: 4,
+                py: 2,
+                mb: 2,
+              }}
+            >
+              Back to Home
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid container spacing={3} justifyContent="center">
+          {algorithms.map((algo) => (
+            <Grid item key={algo.name}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAlgorithm(algo.name)}
+                disabled={isRunning}
+                sx={{
+                  px: 4,
+                  py: 2,
+                  mb: 2,
+                }}
+              >
+                {algo.displayName}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>
+        <div
+          id="grid-container"
+          className="w-full h-full"
+          style={{ backgroundColor: theme.palette.background.default }}
+        >
+          {renderGrid()}
+        </div>
+      </Container>
+    </ThemeProvider>
   );
 }
 

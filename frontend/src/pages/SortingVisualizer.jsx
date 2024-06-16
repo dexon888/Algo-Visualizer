@@ -1,4 +1,3 @@
-// src/pages/SortingVisualizer.js
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +19,9 @@ const theme = createTheme({
     },
     secondary: {
       main: '#ff0000',
+    },
+    success: {
+      main: '#4caf50',
     },
   },
 });
@@ -449,7 +451,7 @@ function SortingVisualizer() {
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               onClick={() => navigate('/')}
               sx={{ py: 2, mx: 1 }}
             >

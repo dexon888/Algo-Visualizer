@@ -1,6 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container, Typography, Grid, Button, TextField, Box, ThemeProvider } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 import '../App.css';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#1e88e5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+    background: {
+      default: '#000000',
+      paper: '#121212',
+    },
+    text: {
+      primary: '#ffffff',
+    },
+  },
+});
 
 function StringVisualizer() {
   const navigate = useNavigate();
@@ -94,46 +115,105 @@ function StringVisualizer() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h2 className="text-2xl font-bold mb-4">String Algorithms Visualizer</h2>
-      <div className="mb-4">
-        <input
-          type="text"
-          value={text}
-          onChange={handleTextChange}
-          placeholder="Enter text"
-          className="px-4 py-2 border rounded-lg shadow-lg m-2"
-        />
-        <input
-          type="text"
-          value={pattern}
-          onChange={handlePatternChange}
-          placeholder="Enter pattern (for KMP)"
-          className="px-4 py-2 border rounded-lg shadow-lg m-2"
-        />
-      </div>
-      <div className="mb-4">
-        <button onClick={() => navigate('/')} className="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-lg m-2">
-          Back to Home
-        </button>
-        {stringAlgorithms.map((algo) => (
-          <div className="tooltip" key={algo.name}>
-            <button
-              onClick={() => handleAlgorithm(algo.name)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-              disabled={isRunning}
+    <ThemeProvider theme={theme}>
+      <Container
+        maxWidth="md"
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          backgroundColor: 'background.default',
+        }}
+      >
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{
+            mb: 4,
+            fontWeight: 'bold',
+            color: 'text.primary',
+          }}
+        >
+          String Algorithms Visualizer
+        </Typography>
+        <Box
+          component="div"
+          sx={{
+            mb: 4,
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 2,
+          }}
+        >
+          <TextField
+            label="Enter text"
+            variant="outlined"
+            value={text}
+            onChange={handleTextChange}
+            sx={{ backgroundColor: 'background.paper' }}
+          />
+          <TextField
+            label="Enter pattern (for KMP)"
+            variant="outlined"
+            value={pattern}
+            onChange={handlePatternChange}
+            sx={{ backgroundColor: 'background.paper' }}
+          />
+        </Box>
+        <Grid container spacing={3} justifyContent="center" sx={{ mb: 4 }}>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => navigate('/')}
+              sx={{
+                px: 4,
+                py: 2,
+                mb: 2,
+              }}
             >
-              {algo.displayName}
-            </button>
-            <span className="tooltiptext">{algo.description}</span>
-          </div>
-        ))}
-      </div>
-      <div className="w-full mb-4 flex items-center justify-center">
-        <label className="mr-2">Result:</label>
-        <div className="px-4 py-2 border rounded-lg shadow-lg bg-white">{result}</div>
-      </div>
-    </div>
+              Back to Home
+            </Button>
+          </Grid>
+          {stringAlgorithms.map((algo) => (
+            <Grid item key={algo.name}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAlgorithm(algo.name)}
+                disabled={isRunning}
+                sx={{
+                  px: 4,
+                  py: 2,
+                  mb: 2,
+                }}
+              >
+                {algo.displayName}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>
+        <Box
+          component="div"
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'background.paper',
+            padding: 2,
+            borderRadius: 1,
+          }}
+        >
+          <Typography variant="h6" color="text.primary">
+            Result: {result}
+          </Typography>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
 

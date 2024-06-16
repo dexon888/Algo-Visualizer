@@ -1,15 +1,35 @@
 // src/pages/SortingVisualizer.js
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import '../App.css'; // Make sure to import your CSS file
+import { useNavigate } from 'react-router-dom';
+import { Container, Typography, Grid, Button, Slider, ThemeProvider, createTheme } from '@mui/material';
+import '../App.css';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#000000',
+      paper: '#000000',
+    },
+    text: {
+      primary: '#ffffff',
+    },
+    primary: {
+      main: '#0000ff',
+    },
+    secondary: {
+      main: '#ff0000',
+    },
+  },
+});
 
 function SortingVisualizer() {
   const [data, setData] = useState([]);
   const [numBars, setNumBars] = useState(20);
   const [isSorting, setIsSorting] = useState(false);
   const [delay, setDelay] = useState(100);
-  const navigate = useNavigate(); // Use useNavigate for navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
     generateNewArray();
@@ -24,8 +44,8 @@ function SortingVisualizer() {
     setData(newData);
   };
 
-  const handleNumBarsChange = (event) => {
-    setNumBars(event.target.value);
+  const handleNumBarsChange = (event, newValue) => {
+    setNumBars(newValue);
   };
 
   const renderBars = () => {
@@ -40,7 +60,7 @@ function SortingVisualizer() {
         enter => enter.append('svg')
           .attr('width', svgWidth)
           .attr('height', svgHeight)
-          .attr('style', 'display: block; margin: 0 auto;')
+          .attr('style', 'display: block; margin: 0 auto; background-color: black;')
       );
 
     svg.selectAll('rect')
@@ -106,7 +126,7 @@ function SortingVisualizer() {
         if (arr[j] < arr[minIndex]) {
           minIndex = j;
         }
-        await delayExecution(delay); 
+        await delayExecution(delay);
       }
       if (minIndex !== i) {
         [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
@@ -393,34 +413,95 @@ function SortingVisualizer() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h2 className="text-2xl font-bold mb-4">Sorting Visualizer</h2>
-      <div className="mb-4">
-        <button onClick={generateNewArray} className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg m-2">
-          Generate New Array
-        </button>
-        <button onClick={() => navigate('/')} className="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-lg m-2">
-          Back to Home
-        </button>
-        {algorithms.map((algo) => (
-          <div className="tooltip" key={algo.name}>
-            <button
-              onClick={() => handleSort(algo.name.replace(' ', '').toLowerCase())}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg m-2"
-              disabled={isSorting}
+    <ThemeProvider theme={theme}>
+      <Container
+        maxWidth="md"
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          backgroundColor: 'black',
+        }}
+      >
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{
+            mb: 8,
+            fontWeight: 'bold',
+            color: 'white',
+          }}
+        >
+          Sorting Visualizer
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={generateNewArray}
+              sx={{ py: 2, mx: 1 }}
             >
-              {algo.name}
-            </button>
-            <span className="tooltiptext">{algo.description}</span>
-          </div>
-        ))}
-      </div>
-      <div className="w-full mb-4 flex items-center justify-center">
-        <label className="mr-2">Number of Bars: {numBars}</label>
-        <input type="range" min="5" max="100" value={numBars} onChange={handleNumBarsChange} className="w-1/2" />
-      </div>
-      <div id="d3-container" className="w-full h-full bg-white shadow-md"></div>
-    </div>
+              Generate New Array
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/')}
+              sx={{ py: 2, mx: 1 }}
+            >
+              Back to Home
+            </Button>
+          </Grid>
+          {algorithms.map((algo) => (
+            <Grid item xs={12} sm={6} md={4} key={algo.name}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => handleSort(algo.name.replace(' ', '').toLowerCase())}
+                disabled={isSorting}
+                sx={{
+                  py: 2,
+                  transition: 'transform 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
+                }}
+              >
+                {algo.name}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>
+        <div className="w-full mb-4 flex items-center justify-center">
+          <Typography
+            variant="body1"
+            sx={{ color: 'white', mr: 2 }}
+          >
+            Number of Bars: {numBars}
+          </Typography>
+          <Slider
+            min={5}
+            max={100}
+            value={numBars}
+            onChange={handleNumBarsChange}
+            sx={{
+              width: '50%',
+              color: 'blue',
+            }}
+          />
+        </div>
+        <div
+          id="d3-container"
+          className="w-full h-full bg-black shadow-md"
+          style={{ backgroundColor: 'black' }}
+        ></div>
+      </Container>
+    </ThemeProvider>
   );
 }
 
